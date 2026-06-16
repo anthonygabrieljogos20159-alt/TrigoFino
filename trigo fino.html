@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigo Fino — Sistema de Gestão</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --dourado: #C8920A;
+    --dourado-claro: #F5C842;
+    --marrom: #3D1C02;
+    --marrom-medio: #6B3A1F;
+    --creme: #FDF6E3;
+    --creme-escuro: #F0E4C8;
+    --verde: #2A6B2A;
+    --verde-claro: #E8F5E8;
+    --vermelho: #C0392B;
+    --vermelho-claro: #FDECEA;
+    --cinza: #6B7280;
+    --branco: #FFFFFF;
+    --sombra: 0 4px 24px rgba(61,28,2,0.13);
+    --sombra-lg: 0 8px 40px rgba(61,28,2,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--marrom);
+    min-height: 100vh;
+    color: var(--marrom);
+  }
+
+  /* ===== TELA DE LOGIN ===== */
+  #tela-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--marrom) 0%, #5C2D0A 60%, var(--marrom-medio) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #tela-login::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,146,10,0.18) 0%, transparent 70%);
+    top: -100px; right: -100px;
+  }
+  #tela-login::after {
+    content: '';
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,146,10,0.12) 0%, transparent 70%);
+    bottom: -80px; left: -80px;
+  }
+
+  .login-card {
+    background: var(--creme);
+    border-radius: 24px;
+    padding: 52px 44px 44px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--sombra-lg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo-area {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .logo-icon {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .logo-area h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--marrom);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .logo-area span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--dourado);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--marrom-medio);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--creme-escuro);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--marrom);
+    background: var(--branco);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus {
+    border-color: var(--dourado);
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--dourado) 0%, var(--dourado-claro) 100%);
+    color: var(--marrom);
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-login:hover { opacity: 0.92; transform: translateY(-1px); }
+  .btn-login:active { transform: translateY(0); }
+
+  .erro-login {
+    background: var(--vermelho-claro);
+    color: var(--vermelho);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  /* ===== SELEÇÃO DE PERFIL ===== */
+  #tela-perfil {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--marrom) 0%, #5C2D0A 100%);
+    display: none;
+  }
+
+  .perfil-card {
+    background: var(--creme);
+    border-radius: 24px;
+    padding: 44px 36px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--sombra-lg);
+    text-align: center;
+  }
+
+  .perfil-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--marrom);
+    margin-bottom: 8px;
+  }
+
+  .perfil-card p {
+    color: var(--cinza);
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+  }
+
+  .perfil-opcoes {
+    display: flex;
+    gap: 16px;
+  }
+
+  .perfil-btn {
+    flex: 1;
+    padding: 28px 16px;
+    border: 2px solid var(--creme-escuro);
+    border-radius: 16px;
+    background: var(--branco);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .perfil-btn:hover {
+    border-color: var(--dourado);
+    background: #FFFBF0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(200,146,10,0.15);
+  }
+
+  .perfil-btn .icone { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+  .perfil-btn strong { display: block; font-size: 1rem; color: var(--marrom); font-weight: 700; }
+  .perfil-btn small { font-size: 0.78rem; color: var(--cinza); }
+
+  /* ===== LAYOUT PRINCIPAL ===== */
+  #app {
+    display: none;
+    min-height: 100vh;
+    background: var(--creme);
+  }
+
+  .topbar {
+    background: var(--marrom);
+    padding: 0 24px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  }
+
+  .topbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--dourado-claro);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .topbar-direita {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .badge-perfil {
+    background: var(--dourado);
+    color: var(--marrom);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-sair {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.7);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-sair:hover { border-color: white; color: white; }
+
+  .nav-tabs {
+    background: var(--branco);
+    border-bottom: 2px solid var(--creme-escuro);
+    padding: 0 24px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    padding: 14px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cinza);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .nav-tab:hover { color: var(--dourado); }
+  .nav-tab.ativo { color: var(--marrom); border-bottom-color: var(--dourado); }
+
+  .conteudo {
+    padding: 28px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ===== SEÇÃO TÍTULO ===== */
+  .sec-titulo {
+    margin-bottom: 24px;
+  }
+
+  .sec-titulo h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--marrom);
+    font-weight: 700;
+  }
+
+  .sec-titulo p {
+    color: var(--cinza);
+    font-size: 0.88rem;
+    margin-top: 4px;
+  }
+
+  /* ===== CARDS ESTATÍSTICAS ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--branco);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--sombra);
+    border-left: 4px solid var(--dourado);
+  }
+
+  .stat-card .label { font-size: 0.75rem; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card .valor { font-size: 1.9rem; font-weight: 700; color: var(--marrom); margin: 4px 0 0; font-family: 'Playfair Display', serif; }
+  .stat-card .sub { font-size: 0.78rem; color: var(--cinza); }
+
+  /* ===== PAINÉIS ===== */
+  .painel {
+    background: var(--branco);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--sombra);
+    margin-bottom: 20px;
+  }
+
+  .painel-titulo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--marrom);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ===== FORMULÁRIO ENTREGA ===== */
+  .form-entrega {
+    display: grid;
+    gap: 16px;
+  }
+
+  .campo-grupo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 500px) {
+    .campo-grupo { grid-template-columns: 1fr; }
+    .perfil-opcoes { flex-direction: column; }
+  }
+
+  .campo label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--marrom-medio);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .campo input, .campo select, .campo textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--creme-escuro);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--marrom);
+    background: var(--creme);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .campo input:focus, .campo select:focus, .campo textarea:focus {
+    border-color: var(--dourado);
+    background: var(--branco);
+  }
+
+  /* ===== PRODUTOS GRID ===== */
+  .produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  .produto-card {
+    background: var(--creme);
+    border: 2px solid var(--creme-escuro);
+    border-radius: 14px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .produto-card:hover { border-color: var(--dourado); }
+
+  .produto-nome {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--marrom);
+    margin-bottom: 4px;
+  }
+
+  .produto-detalhe {
+    font-size: 0.75rem;
+    color: var(--cinza);
+    margin-bottom: 12px;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .qty-btn {
+    width: 30px; height: 30px;
+    border: 2px solid var(--dourado);
+    border-radius: 8px;
+    background: none;
+    color: var(--dourado);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .qty-btn:hover { background: var(--dourado); color: white; }
+
+  .qty-input {
+    width: 54px;
+    text-align: center;
+    border: 2px solid var(--creme-escuro);
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--marrom);
+    background: var(--branco);
+    outline: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== BOTÕES ===== */
+  .btn-primario {
+    background: linear-gradient(135deg, var(--dourado) 0%, var(--dourado-claro) 100%);
+    color: var(--marrom);
+    border: none;
+    border-radius: 12px;
+    padding: 13px 28px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-primario:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .btn-secundario {
+    background: var(--creme);
+    color: var(--marrom);
+    border: 2px solid var(--creme-escuro);
+    border-radius: 12px;
+    padding: 11px 24px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-secundario:hover { border-color: var(--dourado); }
+
+  .btn-perigo {
+    background: var(--vermelho-claro);
+    color: var(--vermelho);
+    border: 2px solid #f5c6c2;
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-perigo:hover { background: var(--vermelho); color: white; }
+
+  .btn-verde {
+    background: var(--verde-claro);
+    color: var(--verde);
+    border: 2px solid #c3e6c3;
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-verde:hover { background: var(--verde); color: white; }
+
+  /* ===== TABELAS ===== */
+  .tabela-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead th {
+    background: var(--creme);
+    color: var(--marrom-medio);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--creme-escuro);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--creme-escuro);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: #FFFBF2; }
+
+  tbody td {
+    padding: 12px 14px;
+    color: var(--marrom);
+  }
+
+  /* ===== STATUS BADGES ===== */
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .badge-verde { background: var(--verde-claro); color: var(--verde); }
+  .badge-amarelo { background: #FEF3C7; color: #92400E; }
+  .badge-vermelho { background: var(--vermelho-claro); color: var(--vermelho); }
+
+  /* ===== FECHAMENTO SEMANAL ===== */
+  .fechamento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .cliente-fechamento {
+    background: var(--branco);
+    border: 2px solid var(--creme-escuro);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--sombra);
+  }
+
+  .cliente-fechamento h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--marrom);
+    margin-bottom: 4px;
+  }
+
+  .cliente-fechamento .semana {
+    font-size: 0.78rem;
+    color: var(--cinza);
+    margin-bottom: 14px;
+  }
+
+  .linha-produto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--creme-escuro);
+    font-size: 0.85rem;
+  }
+
+  .linha-produto:last-of-type { border: none; }
+  .linha-produto .nome { color: var(--marrom-medio); }
+  .linha-produto .qtd { font-weight: 700; color: var(--marrom); }
+
+  .total-fechamento {
+    background: var(--marrom);
+    color: var(--dourado-claro);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .acoes-fechamento { display: flex; gap: 8px; margin-top: 10px; }
+
+  /* ===== FABRICAÇÃO ===== */
+  .fab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .fab-card {
+    background: linear-gradient(135deg, var(--marrom) 0%, var(--marrom-medio) 100%);
+    border-radius: 16px;
+    padding: 24px;
+    color: white;
+    text-align: center;
+  }
+
+  .fab-card .fab-icone { font-size: 2.2rem; margin-bottom: 8px; }
+  .fab-card .fab-nome { font-size: 0.85rem; font-weight: 600; opacity: 0.8; margin-bottom: 4px; }
+  .fab-card .fab-qtd { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; color: var(--dourado-claro); line-height: 1; }
+  .fab-card .fab-unidade { font-size: 0.75rem; opacity: 0.7; margin-top: 4px; }
+
+  /* ===== CLIENTES ===== */
+  .clientes-lista { display: grid; gap: 12px; }
+
+  .cliente-item {
+    background: var(--creme);
+    border: 2px solid var(--creme-escuro);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .cliente-info strong { display: block; font-size: 0.95rem; color: var(--marrom); }
+  .cliente-info small { font-size: 0.78rem; color: var(--cinza); }
+
+  .cliente-acoes { display: flex; gap: 8px; }
+
+  /* ===== ALERT / TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--marrom);
+    color: var(--dourado-claro);
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: var(--sombra-lg);
+    z-index: 9999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .toast.mostrar {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* ===== TELA OCULTA ===== */
+  .tela { display: none; }
+  .tela.ativa { display: block; }
+
+  /* ===== SEMANA LABEL ===== */
+  .semana-info {
+    background: linear-gradient(135deg, var(--dourado) 0%, var(--dourado-claro) 100%);
+    color: var(--marrom);
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+  }
+
+  /* ===== ENTREGA MÓVEL ===== */
+  .entrega-step {
+    background: var(--branco);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--sombra);
+    margin-bottom: 16px;
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    background: var(--dourado);
+    color: var(--marrom);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .step-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--marrom);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--creme-escuro);
+    margin: 20px 0;
+  }
+
+  .historico-entrega {
+    background: var(--creme);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 8px;
+  }
+
+  .historico-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--creme-escuro);
+    font-size: 0.85rem;
+  }
+
+  .historico-item:last-child { border: none; }
+  .historico-item .loja { font-weight: 600; color: var(--marrom); }
+  .historico-item .hora { font-size: 0.72rem; color: var(--cinza); }
+
+  /* ===== EMPTY STATE ===== */
+  .empty {
+    text-align: center;
+    padding: 36px 20px;
+    color: var(--cinza);
+  }
+
+  .empty .icone { font-size: 3rem; margin-bottom: 10px; }
+  .empty p { font-size: 0.88rem; }
+</style>
+</head>
+<body>
+
+<!-- ========== TELA LOGIN ========== -->
+<div id="tela-login">
+  <div class="login-card">
+    <div class="logo-area">
+      <span class="logo-icon">🌾</span>
+      <h1>Trigo Fino</h1>
+      <span>Sistema de Gestão</span>
+    </div>
+    <div class="form-group">
+      <label>Usuário</label>
+      <input type="text" id="inp-usuario" placeholder="Digite seu usuário" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="inp-senha" placeholder="Digite sua senha" autocomplete="off">
+    </div>
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="erro-login" id="erro-login">❌ Usuário ou senha incorretos</div>
+  </div>
+</div>
+
+<!-- ========== TELA SELEÇÃO PERFIL ========== -->
+<div id="tela-perfil">
+  <div class="perfil-card">
+    <div style="font-size:2.2rem;margin-bottom:10px">🌾</div>
+    <h2>Bem-vindo, Trigo Fino!</h2>
+    <p>Selecione como você vai acessar o sistema hoje</p>
+    <div class="perfil-opcoes">
+      <div class="perfil-btn" onclick="entrarComo('matriz')">
+        <span class="icone">🖥️</span>
+        <strong>Matriz</strong>
+        <small>Controle geral, pedidos e fabricação</small>
+      </div>
+      <div class="perfil-btn" onclick="entrarComo('entregador')">
+        <span class="icone">🚚</span>
+        <strong>Entregador</strong>
+        <small>Registrar entregas nas lojas</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== APP PRINCIPAL ========== -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">
+      🌾 Trigo Fino
+    </div>
+    <div class="topbar-direita">
+      <span class="badge-perfil" id="badge-perfil">—</span>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <!-- Tabs (dinâmicas conforme perfil) -->
+  <div class="nav-tabs" id="nav-tabs"></div>
+
+  <div class="conteudo" id="conteudo-app"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ====== DADOS GLOBAIS ======
+const PRODUTOS = [
+  { id: 'leite5',   nome: 'Pão de Leite',   detalhe: 'Pacote c/ 5 unidades',  unidade: 'pct 5un' },
+  { id: 'leite10',  nome: 'Pão de Leite',   detalhe: 'Pacote c/ 10 unidades', unidade: 'pct 10un' },
+  { id: 'milho',    nome: 'Pão de Milho',   detalhe: 'Pacote c/ 4 unidades',  unidade: 'pct 4un' },
+  { id: 'frances',  nome: 'Pão Francês',    detalhe: 'Pacote c/ 3 unidades',  unidade: 'pct 3un' },
+  { id: 'carolina', nome: 'Carolinas',      detalhe: 'Por unidade',           unidade: 'un' },
+];
+
+let CLIENTES = JSON.parse(localStorage.getItem('tf_clientes') || '[]');
+let ENTREGAS = JSON.parse(localStorage.getItem('tf_entregas') || '[]');
+let perfil = null;
+
+// Semana atual
+function semanaAtual() {
+  const hoje = new Date();
+  const inicio = new Date(hoje);
+  inicio.setDate(hoje.getDate() - hoje.getDay() + 1);
+  const fim = new Date(inicio);
+  fim.setDate(inicio.getDate() + 6);
+  const fmt = d => d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+  return `${fmt(inicio)} a ${fmt(fim)}`;
+}
+
+function chavesSemana() {
+  const hoje = new Date();
+  const inicio = new Date(hoje);
+  inicio.setDate(hoje.getDate() - hoje.getDay() + 1);
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(inicio);
+    d.setDate(inicio.getDate() + i);
+    return d.toISOString().split('T')[0];
+  });
+}
+
+function salvar() {
+  localStorage.setItem('tf_clientes', JSON.stringify(CLIENTES));
+  localStorage.setItem('tf_entregas', JSON.stringify(ENTREGAS));
+}
+
+// ====== LOGIN ======
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('tela-login').style.display !== 'none' || document.getElementById('tela-login').style.display === '') {
+      fazerLogin();
+    }
+  }
+});
+
+function fazerLogin() {
+  const u = document.getElementById('inp-usuario').value.trim();
+  const s = document.getElementById('inp-senha').value.trim();
+  if (u === 'Trigo Fino' && s === 'paescarolinas2026') {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-perfil').style.display = 'flex';
+  } else {
+    document.getElementById('erro-login').style.display = 'block';
+  }
+}
+
+function entrarComo(tipo) {
+  perfil = tipo;
+  document.getElementById('tela-perfil').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('badge-perfil').textContent = tipo === 'matriz' ? '🖥️ Matriz' : '🚚 Entregador';
+  construirInterface();
+}
+
+function sair() {
+  perfil = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'flex';
+  document.getElementById('inp-usuario').value = '';
+  document.getElementById('inp-senha').value = '';
+  document.getElementById('erro-login').style.display = 'none';
+}
+
+// ====== NAVEGAÇÃO ======
+const tabsMatriz = [
+  { id: 'painel', label: '📊 Painel' },
+  { id: 'fabricacao', label: '🏭 Fabricação' },
+  { id: 'entregas', label: '📦 Entregas' },
+  { id: 'fechamento', label: '📋 Fechamento Semanal' },
+  { id: 'clientes', label: '🏪 Clientes' },
+];
+
+const tabsEntregador = [
+  { id: 'registrar', label: '📦 Registrar Entrega' },
+  { id: 'minhas-entregas', label: '✅ Minhas Entregas Hoje' },
+];
+
+let tabAtiva = '';
+
+function construirInterface() {
+  const tabs = perfil === 'matriz' ? tabsMatriz : tabsEntregador;
+  const nav = document.getElementById('nav-tabs');
+  nav.innerHTML = tabs.map(t =>
+    `<button class="nav-tab" onclick="irTab('${t.id}')">${t.label}</button>`
+  ).join('');
+  irTab(tabs[0].id);
+}
+
+function irTab(id) {
+  tabAtiva = id;
+  const tabs = perfil === 'matriz' ? tabsMatriz : tabsEntregador;
+  document.querySelectorAll('.nav-tab').forEach((el, i) => {
+    el.classList.toggle('ativo', tabs[i].id === id);
+  });
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = '';
+
+  if (id === 'painel') renderPainel();
+  else if (id === 'fabricacao') renderFabricacao();
+  else if (id === 'entregas') renderEntregas();
+  else if (id === 'fechamento') renderFechamento();
+  else if (id === 'clientes') renderClientes();
+  else if (id === 'registrar') renderRegistrarEntrega();
+  else if (id === 'minhas-entregas') renderMinhasEntregas();
+}
+
+// ====== PAINEL ======
+function renderPainel() {
+  const dias = chavesSemana();
+  const entregasSemana = ENTREGAS.filter(e => dias.includes(e.data));
+  const totalPacotes = entregasSemana.reduce((s, e) => {
+    return s + Object.values(e.produtos).reduce((a,b) => a + parseInt(b||0), 0);
+  }, 0);
+
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Painel Geral</h2>
+      <p>Visão geral da semana atual</p>
+    </div>
+    <div class="semana-info">📅 Semana: ${semanaAtual()}</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Clientes Ativos</div>
+        <div class="valor">${CLIENTES.length}</div>
+        <div class="sub">lojas cadastradas</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Entregas esta Semana</div>
+        <div class="valor">${entregasSemana.length}</div>
+        <div class="sub">registros confirmados</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Pacotes Entregues</div>
+        <div class="valor">${totalPacotes}</div>
+        <div class="sub">total de pacotes</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Fechamentos Pendentes</div>
+        <div class="valor">${CLIENTES.filter(c => !c.fechado).length}</div>
+        <div class="sub">aguardando fechamento</div>
+      </div>
+    </div>
+
+    <div class="painel">
+      <div class="painel-titulo">📦 Últimas Entregas Registradas</div>
+      ${entregasSemana.length === 0 ? `<div class="empty"><div class="icone">📭</div><p>Nenhuma entrega registrada esta semana.</p></div>` : `
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Data</th><th>Entregador</th><th>Loja</th><th>Pão de Leite (5)</th><th>Pão de Leite (10)</th><th>Milho</th><th>Francês</th><th>Carolinas</th></tr></thead>
+          <tbody>
+            ${entregasSemana.slice().reverse().map(e => `
+              <tr>
+                <td>${formatarData(e.data)}</td>
+                <td>${e.entregador}</td>
+                <td><strong>${e.loja}</strong></td>
+                <td>${e.produtos.leite5 || 0}</td>
+                <td>${e.produtos.leite10 || 0}</td>
+                <td>${e.produtos.milho || 0}</td>
+                <td>${e.produtos.frances || 0}</td>
+                <td>${e.produtos.carolina || 0}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>`}
+    </div>
+  `;
+}
+
+// ====== FABRICAÇÃO ======
+function renderFabricacao() {
+  const dias = chavesSemana();
+  const entregasSemana = ENTREGAS.filter(e => dias.includes(e.data));
+
+  const totais = { leite5: 0, leite10: 0, milho: 0, frances: 0, carolina: 0 };
+  entregasSemana.forEach(e => {
+    Object.keys(totais).forEach(k => { totais[k] += parseInt(e.produtos[k] || 0); });
+  });
+
+  // Converter para unidades de pão
+  const unidades = {
+    leite5:   totais.leite5   * 5,
+    leite10:  totais.leite10  * 10,
+    milho:    totais.milho    * 4,
+    frances:  totais.frances  * 3,
+    carolina: totais.carolina * 1,
+  };
+
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Necessidade de Fabricação</h2>
+      <p>Baseado nas entregas registradas esta semana</p>
+    </div>
+    <div class="semana-info">📅 Semana: ${semanaAtual()}</div>
+
+    <div class="painel">
+      <div class="painel-titulo">📦 Pacotes Entregues (Quantidades)</div>
+      <div class="fab-grid">
+        <div class="fab-card">
+          <div class="fab-icone">🍞</div>
+          <div class="fab-nome">Pão de Leite (pct 5un)</div>
+          <div class="fab-qtd">${totais.leite5}</div>
+          <div class="fab-unidade">pacotes</div>
+        </div>
+        <div class="fab-card">
+          <div class="fab-icone">🍞</div>
+          <div class="fab-nome">Pão de Leite (pct 10un)</div>
+          <div class="fab-qtd">${totais.leite10}</div>
+          <div class="fab-unidade">pacotes</div>
+        </div>
+        <div class="fab-card">
+          <div class="fab-icone">🌽</div>
+          <div class="fab-nome">Pão de Milho (pct 4un)</div>
+          <div class="fab-qtd">${totais.milho}</div>
+          <div class="fab-unidade">pacotes</div>
+        </div>
+        <div class="fab-card">
+          <div class="fab-icone">🥖</div>
+          <div class="fab-nome">Pão Francês (pct 3un)</div>
+          <div class="fab-qtd">${totais.frances}</div>
+          <div class="fab-unidade">pacotes</div>
+        </div>
+        <div class="fab-card">
+          <div class="fab-icone">🧁</div>
+          <div class="fab-nome">Carolinas</div>
+          <div class="fab-qtd">${totais.carolina}</div>
+          <div class="fab-unidade">unidades</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="painel">
+      <div class="painel-titulo">🔢 Total de Pães a Fabricar (em unidades)</div>
+      <div class="fab-grid">
+        <div class="fab-card" style="background:linear-gradient(135deg,#5C2D0A,var(--marrom-medio))">
+          <div class="fab-icone">🍞</div>
+          <div class="fab-nome">Pão de Leite</div>
+          <div class="fab-qtd">${unidades.leite5 + unidades.leite10}</div>
+          <div class="fab-unidade">pães no total</div>
+        </div>
+        <div class="fab-card" style="background:linear-gradient(135deg,#3a5a1a,#2A6B2A)">
+          <div class="fab-icone">🌽</div>
+          <div class="fab-nome">Pão de Milho</div>
+          <div class="fab-qtd">${unidades.milho}</div>
+          <div class="fab-unidade">pães no total</div>
+        </div>
+        <div class="fab-card" style="background:linear-gradient(135deg,#1a3a5a,#1a4a7a)">
+          <div class="fab-icone">🥖</div>
+          <div class="fab-nome">Pão Francês</div>
+          <div class="fab-qtd">${unidades.frances}</div>
+          <div class="fab-unidade">pães no total</div>
+        </div>
+        <div class="fab-card" style="background:linear-gradient(135deg,#5a1a3a,#7a1a4a)">
+          <div class="fab-icone">🧁</div>
+          <div class="fab-nome">Carolinas</div>
+          <div class="fab-qtd">${unidades.carolina}</div>
+          <div class="fab-unidade">unidades</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ====== ENTREGAS (MATRIZ) ======
+function renderEntregas() {
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Controle de Entregas</h2>
+      <p>Todas as entregas registradas</p>
+    </div>
+    <div class="painel">
+      <div class="painel-titulo">📦 Histórico de Entregas</div>
+      ${ENTREGAS.length === 0 ? `<div class="empty"><div class="icone">📭</div><p>Nenhuma entrega registrada ainda.</p></div>` : `
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Data</th><th>Entregador</th><th>Loja</th><th>Leite 5</th><th>Leite 10</th><th>Milho</th><th>Francês</th><th>Carolinas</th><th>Ação</th></tr></thead>
+          <tbody>
+            ${ENTREGAS.slice().reverse().map((e, idx) => `
+              <tr>
+                <td>${formatarData(e.data)}</td>
+                <td>${e.entregador}</td>
+                <td><strong>${e.loja}</strong></td>
+                <td>${e.produtos.leite5 || 0}</td>
+                <td>${e.produtos.leite10 || 0}</td>
+                <td>${e.produtos.milho || 0}</td>
+                <td>${e.produtos.frances || 0}</td>
+                <td>${e.produtos.carolina || 0}</td>
+                <td><button class="btn-perigo" onclick="excluirEntrega(${ENTREGAS.length - 1 - idx})">Excluir</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>`}
+    </div>
+  `;
+}
+
+function excluirEntrega(idx) {
+  if (confirm('Deseja excluir esta entrega?')) {
+    ENTREGAS.splice(idx, 1);
+    salvar();
+    mostrarToast('Entrega excluída!');
+    renderEntregas();
+  }
+}
+
+// ====== FECHAMENTO SEMANAL ======
+function renderFechamento() {
+  const dias = chavesSemana();
+  const entregasSemana = ENTREGAS.filter(e => dias.includes(e.data));
+
+  const c = document.getElementById('conteudo-app');
+
+  if (CLIENTES.length === 0) {
+    c.innerHTML = `
+      <div class="sec-titulo"><h2>Fechamento Semanal</h2></div>
+      <div class="empty"><div class="icone">🏪</div><p>Cadastre clientes primeiro na aba <strong>Clientes</strong>.</p></div>
+    `;
+    return;
+  }
+
+  const cards = CLIENTES.map(cli => {
+    const esCli = entregasSemana.filter(e => e.loja === cli.nome);
+    const totais = { leite5: 0, leite10: 0, milho: 0, frances: 0, carolina: 0 };
+    esCli.forEach(e => Object.keys(totais).forEach(k => totais[k] += parseInt(e.produtos[k] || 0)));
+
+    const linhas = [
+      { nome: 'Pão de Leite (pct 5un)', qtd: totais.leite5 },
+      { nome: 'Pão de Leite (pct 10un)', qtd: totais.leite10 },
+      { nome: 'Pão de Milho (pct 4un)', qtd: totais.milho },
+      { nome: 'Pão Francês (pct 3un)', qtd: totais.frances },
+      { nome: 'Carolinas', qtd: totais.carolina },
+    ].filter(l => l.qtd > 0);
+
+    const totalGeral = Object.values(totais).reduce((a,b) => a+b, 0);
+
+    return `
+      <div class="cliente-fechamento">
+        <h3>🏪 ${cli.nome}</h3>
+        <div class="semana">📅 ${semanaAtual()}</div>
+        ${linhas.length === 0 ? `<p style="color:var(--cinza);font-size:0.82rem">Nenhuma entrega nesta semana</p>` :
+          linhas.map(l => `
+            <div class="linha-produto">
+              <span class="nome">${l.nome}</span>
+              <span class="qtd">${l.qtd} pct</span>
+            </div>
+          `).join('')
+        }
+        <div class="total-fechamento">
+          <span>Total de Pacotes</span>
+          <span>${totalGeral}</span>
+        </div>
+        <div class="acoes-fechamento">
+          <button class="btn-verde" onclick="copiarFechamento('${cli.nome}', ${JSON.stringify(linhas).replace(/'/g,"&#39;")}, '${totalGeral}')">
+            📋 Copiar Resumo
+          </button>
+          <button class="btn-primario" style="font-size:0.8rem;padding:8px 14px;" onclick="compartilharFechamento('${cli.nome}', ${JSON.stringify(linhas).replace(/'/g,"&#39;")}, '${totalGeral}')">
+            📤 Compartilhar
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Fechamento Semanal</h2>
+      <p>Resumo de entregas por cliente para envio</p>
+    </div>
+    <div class="semana-info">📅 Semana: ${semanaAtual()}</div>
+    <div class="fechamento-grid">${cards}</div>
+  `;
+}
+
+function textoFechamento(loja, linhas, total) {
+  const linhasTexto = linhas.map(l => `• ${l.nome}: ${l.qtd} pct`).join('\n');
+  return `🌾 *TRIGO FINO — Fechamento Semanal*\n🏪 ${loja}\n📅 Semana: ${semanaAtual()}\n\n${linhasTexto || '• Sem entregas'}\n\n📦 *Total: ${total} pacotes*`;
+}
+
+function copiarFechamento(loja, linhas, total) {
+  navigator.clipboard.writeText(textoFechamento(loja, linhas, total));
+  mostrarToast('Resumo copiado!');
+}
+
+function compartilharFechamento(loja, linhas, total) {
+  const texto = textoFechamento(loja, linhas, total);
+  if (navigator.share) {
+    navigator.share({ text: texto });
+  } else {
+    navigator.clipboard.writeText(texto);
+    mostrarToast('Texto copiado para compartilhar!');
+  }
+}
+
+// ====== CLIENTES ======
+function renderClientes() {
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Clientes / Lojas</h2>
+      <p>Gerencie os pontos de entrega</p>
+    </div>
+    <div class="painel">
+      <div class="painel-titulo">➕ Adicionar Cliente</div>
+      <div class="campo-grupo" style="max-width:500px">
+        <div class="campo">
+          <label>Nome da Loja</label>
+          <input type="text" id="novo-cliente" placeholder="Ex: Mercado São João">
+        </div>
+        <div class="campo">
+          <label>Contato (opcional)</label>
+          <input type="text" id="novo-contato" placeholder="Ex: (11) 9 9999-9999">
+        </div>
+      </div>
+      <button class="btn-primario" style="margin-top:14px" onclick="adicionarCliente()">Adicionar Cliente</button>
+    </div>
+    <div class="painel">
+      <div class="painel-titulo">🏪 Lojas Cadastradas (${CLIENTES.length})</div>
+      ${CLIENTES.length === 0 ? `<div class="empty"><div class="icone">🏪</div><p>Nenhum cliente cadastrado ainda.</p></div>` : `
+      <div class="clientes-lista">
+        ${CLIENTES.map((cli, i) => `
+          <div class="cliente-item">
+            <div class="cliente-info">
+              <strong>${cli.nome}</strong>
+              <small>${cli.contato || 'Sem contato'}</small>
+            </div>
+            <div class="cliente-acoes">
+              <button class="btn-perigo" onclick="excluirCliente(${i})">Excluir</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>`}
+    </div>
+  `;
+}
+
+function adicionarCliente() {
+  const nome = document.getElementById('novo-cliente').value.trim();
+  if (!nome) { mostrarToast('Digite o nome da loja!'); return; }
+  if (CLIENTES.find(c => c.nome === nome)) { mostrarToast('Cliente já cadastrado!'); return; }
+  CLIENTES.push({ nome, contato: document.getElementById('novo-contato').value.trim() });
+  salvar();
+  mostrarToast(`Loja "${nome}" adicionada!`);
+  renderClientes();
+}
+
+function excluirCliente(idx) {
+  if (confirm(`Excluir "${CLIENTES[idx].nome}"?`)) {
+    CLIENTES.splice(idx, 1);
+    salvar();
+    mostrarToast('Cliente removido!');
+    renderClientes();
+  }
+}
+
+// ====== REGISTRAR ENTREGA (ENTREGADOR) ======
+function renderRegistrarEntrega() {
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Registrar Entrega</h2>
+      <p>Preencha o que foi entregue na loja</p>
+    </div>
+
+    <div class="entrega-step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <h3>Informações da Entrega</h3>
+      </div>
+      <div class="form-entrega">
+        <div class="campo-grupo">
+          <div class="campo">
+            <label>Seu Nome</label>
+            <input type="text" id="ent-entregador" placeholder="Seu nome">
+          </div>
+          <div class="campo">
+            <label>Data da Entrega</label>
+            <input type="date" id="ent-data" value="${new Date().toISOString().split('T')[0]}">
+          </div>
+        </div>
+        <div class="campo">
+          <label>Loja / Cliente</label>
+          <select id="ent-loja">
+            <option value="">— Selecione a loja —</option>
+            ${CLIENTES.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('')}
+            ${CLIENTES.length === 0 ? '<option disabled>Nenhum cliente cadastrado</option>' : ''}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="entrega-step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <h3>Quantidade de Produtos Entregues</h3>
+      </div>
+      <div class="produtos-grid">
+        ${PRODUTOS.map(p => `
+          <div class="produto-card">
+            <div class="produto-nome">${p.nome}</div>
+            <div class="produto-detalhe">${p.detalhe}</div>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="alterarQty('${p.id}', -1)">−</button>
+              <input class="qty-input" type="number" min="0" value="0" id="qty-${p.id}">
+              <button class="qty-btn" onclick="alterarQty('${p.id}', 1)">+</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn-primario" onclick="confirmarEntrega()">✅ Confirmar Entrega</button>
+      <button class="btn-secundario" onclick="limparFormEntrega()">🔄 Limpar</button>
+    </div>
+  `;
+}
+
+function alterarQty(id, delta) {
+  const inp = document.getElementById(`qty-${id}`);
+  const novo = Math.max(0, parseInt(inp.value || 0) + delta);
+  inp.value = novo;
+}
+
+function limparFormEntrega() {
+  PRODUTOS.forEach(p => {
+    const el = document.getElementById(`qty-${p.id}`);
+    if (el) el.value = 0;
+  });
+}
+
+function confirmarEntrega() {
+  const entregador = document.getElementById('ent-entregador').value.trim();
+  const loja = document.getElementById('ent-loja').value;
+  const data = document.getElementById('ent-data').value;
+
+  if (!entregador) { mostrarToast('Digite seu nome!'); return; }
+  if (!loja) { mostrarToast('Selecione a loja!'); return; }
+  if (!data) { mostrarToast('Selecione a data!'); return; }
+
+  const produtos = {};
+  PRODUTOS.forEach(p => {
+    produtos[p.id] = parseInt(document.getElementById(`qty-${p.id}`).value || 0);
+  });
+
+  const totalPacotes = Object.values(produtos).reduce((a,b) => a+b, 0);
+  if (totalPacotes === 0) { mostrarToast('Adicione ao menos 1 produto!'); return; }
+
+  ENTREGAS.push({ entregador, loja, data, produtos, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
+  salvar();
+  mostrarToast(`✅ Entrega confirmada em ${loja}!`);
+  limparFormEntrega();
+  document.getElementById('ent-loja').value = '';
+}
+
+// ====== MINHAS ENTREGAS HOJE ======
+function renderMinhasEntregas() {
+  const hoje = new Date().toISOString().split('T')[0];
+  const entregasHoje = ENTREGAS.filter(e => e.data === hoje);
+
+  const c = document.getElementById('conteudo-app');
+  c.innerHTML = `
+    <div class="sec-titulo">
+      <h2>Entregas de Hoje</h2>
+      <p>${formatarData(hoje)}</p>
+    </div>
+    ${entregasHoje.length === 0 ? `
+      <div class="entrega-step">
+        <div class="empty"><div class="icone">📭</div><p>Nenhuma entrega registrada hoje ainda.</p></div>
+      </div>
+    ` : `
+      <div class="painel">
+        <div class="painel-titulo">📦 ${entregasHoje.length} entrega(s) hoje</div>
+        ${entregasHoje.map(e => `
+          <div class="historico-item">
+            <div>
+              <div class="loja">🏪 ${e.loja}</div>
+              <small style="color:var(--cinza);font-size:0.78rem">
+                Leite 5: ${e.produtos.leite5} | Leite 10: ${e.produtos.leite10} | Milho: ${e.produtos.milho} | Francês: ${e.produtos.frances} | Carolinas: ${e.produtos.carolina}
+              </small>
+            </div>
+            <div class="hora">🕐 ${e.hora}</div>
+          </div>
+        `).join('')}
+      </div>
+    `}
+  `;
+}
+
+// ====== HELPERS ======
+function formatarData(str) {
+  if (!str) return '';
+  const [y, m, d] = str.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('mostrar');
+  setTimeout(() => t.classList.remove('mostrar'), 2800);
+}
+
+// Inicializar tela de login visível
+document.getElementById('tela-login').style.display = 'flex';
+document.getElementById('tela-perfil').style.display = 'none';
+document.getElementById('app').style.display = 'none';
+</script>
+</body>
+</html>
